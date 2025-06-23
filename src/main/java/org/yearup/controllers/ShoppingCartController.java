@@ -44,8 +44,10 @@ public class ShoppingCartController
         {
             // get the currently logged in username
             String userName = principal.getName();
+            System.out.println("Username: " + userName);
             // find database user by userId
             User user = userDao.getByUserName(userName);
+            System.out.println("User: " + user);
             int userId = user.getId();
 
             // use the shoppingcartDao to get all items in the cart and return the cart
