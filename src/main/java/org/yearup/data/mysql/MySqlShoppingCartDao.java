@@ -27,12 +27,13 @@ public class MySqlShoppingCartDao  extends MySqlDaoBase implements ShoppingCartD
     @Override
     public ShoppingCart getByUserId(int userId) {
         String sql =
-                "SELECT shopping_cart.product_id, shopping_cart.quantity, shopping_cart.discount_percent, " +
+                "SELECT shopping_cart.product_id, shopping_cart.quantity, " +
                         "products.name, products.price, products.category_id, products.description, " +
                         "products.color, products.stock, products.featured, products.image_url " +
                         "FROM shopping_cart " +
                         "JOIN products ON shopping_cart.product_id = products.product_id " +
                         "WHERE shopping_cart.user_id = ?";
+
         ShoppingCart cart = new ShoppingCart();
         try (
             Connection conn = dataSource.getConnection();
@@ -41,10 +42,12 @@ public class MySqlShoppingCartDao  extends MySqlDaoBase implements ShoppingCartD
             stmt.setInt(1, userId);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
+                System.out.println("DAO: Found product in cart, productId = " + rs.getInt("product_id"));
+                // ... rest of your code ...
                 int productId = rs.getInt("product_id");
                 int quantity = rs.getInt("quantity");
-                BigDecimal discountPercent = rs.getBigDecimal("discount_percent");
-                if (discountPercent == null) discountPercent = BigDecimal.ZERO;
+//                BigDecimal discountPercent = rs.getBigDecimal("discount_percent");
+//                if (discountPercent == null) discountPercent = BigDecimal.ZERO;
             Product product = new Product(
                 productId,
                 rs.getString("name"),
@@ -60,11 +63,13 @@ public class MySqlShoppingCartDao  extends MySqlDaoBase implements ShoppingCartD
                 ShoppingCartItem item = new ShoppingCartItem();
                 item.setProduct(product);
                 item.setQuantity(quantity);
-                item.setDiscountPercent(discountPercent);
+//                item.setDiscountPercent(discountPercent);
 
                 cart.add(item);
             }
         } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("DAO: SQL Exception message: " + e.getMessage());
             throw new RuntimeException(e);
             }
         return cart;
