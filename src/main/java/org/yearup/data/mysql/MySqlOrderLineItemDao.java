@@ -18,13 +18,14 @@ public class MySqlOrderLineItemDao extends MySqlDaoBase implements OrderLineItem
 
     @Override
     public void create(OrderLineItem item) {
-        String sql = "INSERT INTO order_line_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO order_line_items (order_id, product_id, sales_price, quantity, discount) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, item.getOrderId());
             stmt.setInt(2, item.getProductId());
-            stmt.setInt(3, item.getQuantity());
-            stmt.setBigDecimal(4, item.getPrice());
+            stmt.setBigDecimal(3, item.getSalesPrice());
+            stmt.setInt(4, item.getQuantity());
+            stmt.setBigDecimal(5, item.getDiscount() != null ? item.getDiscount() : java.math.BigDecimal.ZERO); // defaults to 0 if null
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
