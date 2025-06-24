@@ -35,8 +35,6 @@ public class ShoppingCartController
         this.productDao = productDao;
     }
 
-
-    // each method in this controller requires a Principal object as a parameter
     @GetMapping
     public ShoppingCart getCart(Principal principal)
     {
@@ -50,7 +48,6 @@ public class ShoppingCartController
             System.out.println("User: " + user);
             int userId = user.getId();
 
-            // use the shoppingcartDao to get all items in the cart and return the cart
             return shoppingCartDao.getByUserId(userId);
         }
         catch(Exception e)
@@ -126,6 +123,4 @@ public class ShoppingCartController
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
     }
-
-
 }
