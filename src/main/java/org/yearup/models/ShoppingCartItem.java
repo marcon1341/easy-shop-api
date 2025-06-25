@@ -3,6 +3,7 @@ package org.yearup.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.math.BigDecimal;
+//Represents a single item in a shopping cart, including the product and quantity.
 
 public class ShoppingCartItem
 {
@@ -11,41 +12,39 @@ public class ShoppingCartItem
     private BigDecimal discountPercent = BigDecimal.ZERO;
 
 
+    //getters
     public Product getProduct()
     {
         return product;
     }
-
-    public void setProduct(Product product)
-    {
-        this.product = product;
-    }
-
     public int getQuantity()
     {
         return quantity;
     }
-
-    public void setQuantity(int quantity)
-    {
-        this.quantity = quantity;
-    }
-
     public BigDecimal getDiscountPercent()
     {
         return discountPercent;
     }
+    public int getProductId()
+    {
+        return this.product.getProductId();
+    }
 
+    //setters
+    public void setProduct(Product product)
+    {
+        this.product = product;
+    }
+    public void setQuantity(int quantity)
+    {
+        this.quantity = quantity;
+    }
     public void setDiscountPercent(BigDecimal discountPercent)
     {
         this.discountPercent = discountPercent;
     }
 
     @JsonIgnore
-    public int getProductId()
-    {
-        return this.product.getProductId();
-    }
 
     public BigDecimal getLineTotal()
     {

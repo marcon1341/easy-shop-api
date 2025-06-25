@@ -12,14 +12,23 @@ import org.yearup.models.User;
 
 import java.security.Principal;
 
+/**
+ * REST controller for handling user profile operations.
+ * Only authenticated users can access these endpoints.
+ */
 @RestController
 @RequestMapping("/profile")
-@CrossOrigin
-@PreAuthorize("isAuthenticated()")
+@CrossOrigin //allows requests from any origin
+@PreAuthorize("isAuthenticated()") //required authentication
 public class ProfileController {
     private ProfileDao profileDao;
     private UserDao userDao;
 
+    /**
+     * Constructor with dependency injection for DAOs.
+     * @param profileDao The data access object for profiles.
+     * @param userDao  The data access object for users.
+     */
     @Autowired
     public ProfileController(ProfileDao profileDao, UserDao userDao)
     {
@@ -27,6 +36,13 @@ public class ProfileController {
         this.userDao = userDao;
     }
 
+    /**
+     * GET /profile
+     * Returns the profile for the currently authenticated user.
+     * @param principal The Principal object representing the current user.
+     * @return The Profile for the authenticated user.
+     * @throws ResponseStatusException (404) if profile not found, or 500 for other errors.
+     */
     @GetMapping
     public Profile getProfile(Principal principal){
         try {
@@ -44,6 +60,14 @@ public class ProfileController {
         }
     }
 
+    /**
+     * PUT /profile
+     * Updates the profile for the currently authenticated user.
+     * Only the owner can update their profile.
+     * @param profile   The profile object with updated data (from request body).
+     * @param principal The Principal object representing the current user.
+     * @throws ResponseStatusException (500) if update fails.
+     */
     @PutMapping
     public void updateProfile(@RequestBody Profile profile, Principal principal)
     {

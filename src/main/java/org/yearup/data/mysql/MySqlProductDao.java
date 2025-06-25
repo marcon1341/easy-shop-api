@@ -10,14 +10,30 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * MySQL implementation of the {@link ProductDao} interface.
+ * Handles CRUD and search operations for products in the database.
+ */
 @Component
 public class MySqlProductDao extends MySqlDaoBase implements ProductDao
 {
+    /**
+     * Constructor for dependency injection.
+     * @param dataSource The DataSource for database connections.
+     */
     public MySqlProductDao(DataSource dataSource)
     {
         super(dataSource);
     }
 
+    /**
+     * Searches for products by optional category, min/max price, and color.
+     * @param categoryId Category filter.
+     * @param minPrice Minimum price filter.
+     * @param maxPrice Maximum price filter.
+     * @param color Color filter.
+     * @return List of products matching the filters.
+     */
     @Override
     public List<Product> search(Integer categoryId, BigDecimal minPrice, BigDecimal maxPrice, String color)
     {
@@ -42,33 +58,15 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
         }
        List<Product> products = new ArrayList<>();
 
-//        String sql = "SELECT * FROM products " +
-//                "WHERE (category_id = ? OR ? = -1) " +
-//                "   AND (price <= ? OR ? = -1) " +
-//                "   AND (color = ? OR ? = '') ";
-//
-//        categoryId = categoryId == null ? -1 : categoryId;
-//        minPrice = minPrice == null ? new BigDecimal("-1") : minPrice;
-//        maxPrice = maxPrice == null ? new BigDecimal("-1") : maxPrice;
-//        color = color == null ? "" : color;
-
-        try (Connection connection = getConnection())
-        {
+        try (Connection connection = getConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql.toString());
-//            statement.setInt(1, categoryId);
-//            statement.setInt(2, categoryId);
-//            statement.setBigDecimal(3, minPrice);
-//            statement.setBigDecimal(4, minPrice);
-//            statement.setString(5, color);
-//            statement.setString(6, color);
+
             for (int i = 0; i < params.size(); i++) {
                 statement.setObject(i + 1, params.get(i));
             }
-
             ResultSet row = statement.executeQuery();
 
-            while (row.next())
-            {
+            while (row.next()) {
                 Product product = mapRow(row);
                 products.add(product);
             }
@@ -81,6 +79,11 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
         return products;
     }
 
+    /**
+     * Lists all products by a specific category.
+     * @param categoryId The category ID.
+     * @return List of products in the category.
+     */
     @Override
     public List<Product> listByCategoryId(int categoryId)
     {
@@ -89,15 +92,13 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
         String sql = "SELECT * FROM products " +
                     " WHERE category_id = ? ";
 
-        try (Connection connection = getConnection())
-        {
+        try (Connection connection = getConnection()) {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, categoryId);
 
             ResultSet row = statement.executeQuery();
 
-            while (row.next())
-            {
+            while (row.next()) {
                 Product product = mapRow(row);
                 products.add(product);
             }
@@ -110,7 +111,11 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
         return products;
     }
 
-
+    /**
+     * Retrieves a product by its unique ID.
+     * @param productId The product ID.
+     * @return The Product object, or null if not found.
+     */
     @Override
     public Product getById(int productId)
     {
@@ -134,6 +139,11 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
         return null;
     }
 
+    /**
+     * Inserts a new product into the database.
+     * @param product The Product to create.
+     * @return The created Product with the generated ID (if successful), otherwise null.
+     */
     @Override
     public Product create(Product product)
     {
@@ -175,6 +185,11 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
         return null;
     }
 
+    /**
+     * Updates an existing product by ID.
+     * @param productId The ID of the product to update.
+     * @param product   The updated Product data.
+     */
     @Override
     public void update(int productId, Product product)
     {
@@ -210,6 +225,10 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
         }
     }
 
+    /**
+     * Deletes a product from the database by ID.
+     * @param productId The product to delete.
+     */
     @Override
     public void delete(int productId)
     {
@@ -230,6 +249,12 @@ public class MySqlProductDao extends MySqlDaoBase implements ProductDao
         }
     }
 
+    /**
+     * Helper method to convert a ResultSet row to a Product object.
+     * @param row The ResultSet positioned at the correct row.
+     * @return The Product object.
+     * @throws SQLException if column access fails.
+     */
     protected static Product mapRow(ResultSet row) throws SQLException
     {
         int productId = row.getInt("product_id");

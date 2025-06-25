@@ -2,6 +2,10 @@ package org.yearup.models;
 
 import java.math.BigDecimal;
 
+/**
+ * Represents a product available in the store's catalog.
+ * Includes details such as name, price, category, description, and stock status.
+ */
 public class Product
 {
     private int productId;
@@ -14,9 +18,7 @@ public class Product
     private boolean isFeatured;
     private String imageUrl;
 
-    public Product()
-    {
-    }
+    public Product() {}
 
     public Product(int productId, String name, BigDecimal price, int categoryId, String description, String color, int stock, boolean isFeatured, String imageUrl)
     {
@@ -30,7 +32,7 @@ public class Product
         this.isFeatured = isFeatured;
         this.imageUrl = imageUrl;
     }
-
+//  getters and setters
     public int getProductId()
     {
         return productId;

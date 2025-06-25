@@ -6,15 +6,30 @@ import org.yearup.data.ProfileDao;
 
 import javax.sql.DataSource;
 import java.sql.*;
+/**
+ * MySQL implementation of the {@link ProfileDao} interface.
+ * Handles CRUD operations for user profiles in a MySQL database.
+ */
 
-@Component
+@Component //register this class as a spring bean
 public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao
 {
+
+    /**
+     * Constructs a new MySqlProfileDao using the provided DataSource.
+     * @param dataSource The DataSource used for database connections.
+     */
     public MySqlProfileDao(DataSource dataSource)
     {
         super(dataSource);
     }
 
+    /**
+     * Inserts a new profile into the 'profiles' table.
+     * @param profile The {@link Profile} object to save.
+     * @return The saved Profile object.
+     * @throws RuntimeException if a SQL error occurs.
+     */
     @Override
     public Profile create(Profile profile)
     {
@@ -23,6 +38,7 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao
 
         try(Connection connection = getConnection())
         {
+            //prepare SQL statement with parameters
             PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setInt(1, profile.getUserId());
             ps.setString(2, profile.getFirstName());
@@ -34,7 +50,7 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao
             ps.setString(8, profile.getState());
             ps.setString(9, profile.getZip());
 
-            ps.executeUpdate();
+            ps.executeUpdate();//execute the SQL insert
 
             return profile;
         }
@@ -44,6 +60,12 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao
         }
     }
 
+    /**
+     * Retrieves a profile from the database for the given userId.
+     * @param userId The unique user ID to search for.
+     * @return The Profile object, or null if not found.
+     * @throws RuntimeException if a SQL error occurs.
+     */
     @Override
     public Profile getByUserId(int userId) {
         String sql = "SELECT * FROM profiles WHERE user_id = ?";
@@ -52,6 +74,7 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
+//            if a profile found populate a new profile object
             if(rs.next())
             {
                 Profile profile = new Profile();
@@ -72,6 +95,11 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao
         }
     }
 
+    /**
+     * Updates an existing profile's information in the database.
+     * @param profile The Profile object with updated info.
+     * @throws RuntimeException if a SQL error occurs.
+     */
     @Override
     public void update(Profile profile) {
         String sql = "UPDATE profiles SET first_name=?, last_name=?, phone=?, email=?, address=?, city=?, state=?, zip=? WHERE user_id=?";

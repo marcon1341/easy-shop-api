@@ -1,5 +1,9 @@
 package org.yearup.models;
 
+/**
+ * Represents a product category.
+ * Each category has a unique ID, a name, and a description.
+ */
 public class Category
 {
     private int categoryId;
@@ -17,6 +21,7 @@ public class Category
         this.description = description;
     }
 
+    //getters and setters
     public int getCategoryId()
     {
         return categoryId;

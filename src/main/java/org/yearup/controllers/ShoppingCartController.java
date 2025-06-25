@@ -14,19 +14,27 @@ import org.yearup.models.User;
 
 import java.security.Principal;
 
-// convert this class to a REST controller
-// only logged in users should have access to these actions
+/**
+ * REST controller for managing the shopping cart for logged-in users.
+ * Only authenticated users can access these endpoints.
+ * Provides actions to view, add, update, and remove cart items.
+ */
 @RestController
 @RequestMapping("/cart")
 @CrossOrigin
 @PreAuthorize("isAuthenticated()")//usseer must logged in
 public class ShoppingCartController
 {
-    // a shopping cart requires
     private ShoppingCartDao shoppingCartDao;
     private UserDao userDao;
     private ProductDao productDao;
 
+    /**
+     * Constructor for dependency injection.
+     * @param shoppingCartDao DAO for cart operations.
+     * @param userDao DAO for user lookup.
+     * @param productDao DAO for product lookup.
+     */
     @Autowired
     public ShoppingCartController(ShoppingCartDao shoppingCartDao, UserDao userDao, ProductDao productDao)
     {
@@ -35,6 +43,12 @@ public class ShoppingCartController
         this.productDao = productDao;
     }
 
+    /**
+     * GET /cart
+     * Returns the current user's shopping cart.
+     * @param principal Authenticated user info.
+     * @return The ShoppingCart object for the user.
+     */
     @GetMapping
     public ShoppingCart getCart(Principal principal)
     {
@@ -56,8 +70,13 @@ public class ShoppingCartController
         }
     }
 
-    // add a POST method to add a product to the cart - the url should be
-    // https://localhost:8080/cart/products/15 (15 is the productId to be added
+    /**
+     * POST /cart/products/{productId}
+     * Adds a product to the current user's cart. If already in cart, increments quantity.
+     * @param productId Product to add.
+     * @param principal Authenticated user info.
+     * @return Updated ShoppingCart.
+     */
     @PostMapping("/products/{productId}")
     public ShoppingCart addProductToCart(@PathVariable int productId, Principal principal) {
         try {
@@ -74,9 +93,14 @@ public class ShoppingCartController
         }
     }
 
-    // add a PUT method to update an existing product in the cart - the url should be
-    // https://localhost:8080/cart/products/15 (15 is the productId to be updated)
-    // the BODY should be a ShoppingCartItem - quantity is the only value that will be updated
+    /**
+     * PUT /cart/products/{productId}
+     * Updates the quantity of a product in the user's cart.
+     * @param productId Product to update.
+     * @param item ShoppingCartItem object with new quantity.
+     * @param principal Authenticated user info.
+     * @return Updated ShoppingCart.
+     */
     @PutMapping("/products/{productId}")
     public ShoppingCart updateCartItem(@PathVariable int productId, @RequestBody ShoppingCartItem item, Principal principal){
         try
@@ -91,8 +115,13 @@ public class ShoppingCartController
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
     }
-    // add a DELETE method to clear all products from the current users cart
-    // https://localhost:8080/cart
+
+    /**
+     * DELETE /cart
+     * Clears all products from the current user's cart.
+     * @param principal Authenticated user info.
+     * @return Updated (now empty) ShoppingCart.
+     */
     @DeleteMapping
     public ShoppingCart clearCart(Principal principal)
     {
@@ -110,6 +139,14 @@ public class ShoppingCartController
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
     }
+
+    /**
+     * DELETE /cart/products/{productId}
+     * Removes a specific product from the user's cart.
+     * @param productId Product to remove.
+     * @param principal Authenticated user info.
+     * @return Updated ShoppingCart.
+     */
     @DeleteMapping("/products/{productId}")
     public ShoppingCart removeProductFromCart(@PathVariable int productId, Principal principal) {
         try {

@@ -7,6 +7,9 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Represents a user in the application, including authentication and authorization info.
+ */
 public class User {
 
    private int id;
@@ -28,7 +31,7 @@ public class User {
       if(authorities != null) this.setAuthorities(authorities);
       this.activated = true;
    }
-
+//getters and setters
    public int getId() {
       return id;
    }

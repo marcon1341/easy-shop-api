@@ -3,6 +3,10 @@ package org.yearup.models;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * Represents a customer's order, including shipping address, shipping amount,
+ * and the date/time the order was placed.
+ */
 public class Order {
     private int orderId;
     private int userId;

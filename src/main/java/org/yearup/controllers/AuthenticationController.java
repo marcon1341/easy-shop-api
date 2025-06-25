@@ -23,6 +23,11 @@ import org.yearup.models.User;
 import org.yearup.security.jwt.JWTFilter;
 import org.yearup.security.jwt.TokenProvider;
 
+/**
+ * REST controller for user authentication and registration.
+ * Handles login and user sign-up (register) endpoints.
+ * Accessible to all users.
+ */
 @RestController
 @CrossOrigin
 @PreAuthorize("permitAll()")

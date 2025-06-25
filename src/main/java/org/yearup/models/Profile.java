@@ -1,5 +1,7 @@
 package org.yearup.models;
 
+//Represents a user's profile, including contact and address information.
+
 public class Profile
 {
     private int userId;
@@ -12,9 +14,7 @@ public class Profile
     private String state = "";
     private String zip = "";
 
-    public Profile()
-    {
-    }
+    public Profile() {}  //default constructor
 
     public Profile(int userId, String firstName, String lastName, String phone, String email, String address, String city, String state, String zip)
     {
@@ -28,7 +28,7 @@ public class Profile
         this.state = state;
         this.zip = zip;
     }
-
+// getters and setters
     public int getUserId()
     {
         return userId;

@@ -14,16 +14,31 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+/**
+ * MySQL implementation of the {@link ShoppingCartDao} interface.
+ * Handles shopping cart CRUD operations in the MySQL database.
+ */
 
-@Component
+@Component //this register the class as bean
 public class MySqlShoppingCartDao  extends MySqlDaoBase implements ShoppingCartDao {
     private  ProductDao productDao;
 
+    /**
+     * Constructs the DAO with the required DataSource and ProductDao.
+     * @param dataSource  DataSource for database connections.
+     * @param productDao  DAO for product information.
+     */
     @Autowired
-    public MySqlShoppingCartDao(DataSource dataSource,ProductDao productdao){
+    public MySqlShoppingCartDao(DataSource dataSource,ProductDao productDao){
         super(dataSource);
-        this.productDao = productdao;
+        this.productDao = productDao;
     }
+
+    /**
+     * Retrieves the shopping cart for a specific user, including all products and quantities.
+     * @param userId The user's unique ID.
+     * @return The ShoppingCart for that user.
+     */
     @Override
     public ShoppingCart getByUserId(int userId) {
         String sql =
@@ -48,6 +63,8 @@ public class MySqlShoppingCartDao  extends MySqlDaoBase implements ShoppingCartD
                 int quantity = rs.getInt("quantity");
 //                BigDecimal discountPercent = rs.getBigDecimal("discount_percent");
 //                if (discountPercent == null) discountPercent = BigDecimal.ZERO;
+
+                //construct a product obj for cat entry
             Product product = new Product(
                 productId,
                 rs.getString("name"),
@@ -60,6 +77,7 @@ public class MySqlShoppingCartDao  extends MySqlDaoBase implements ShoppingCartD
                 rs.getString("image_url")
                 );
 
+                // Create a ShoppingCartItem and add to the cart
                 ShoppingCartItem item = new ShoppingCartItem();
                 item.setProduct(product);
                 item.setQuantity(quantity);
@@ -75,6 +93,11 @@ public class MySqlShoppingCartDao  extends MySqlDaoBase implements ShoppingCartD
         return cart;
     }
 
+    /**
+     * Adds a product to the user's cart. Increments quantity if already exists, otherwise inserts.
+     * @param userId  The user to add product for.
+     * @param productId The product to add.
+     */
     @Override
     public void addProductToCart(int userId, int productId) {
         String check = "SELECT quantity FROM shopping_cart WHERE user_id = ? AND product_id = ?";
@@ -83,20 +106,20 @@ public class MySqlShoppingCartDao  extends MySqlDaoBase implements ShoppingCartD
 
         try (Connection conn = dataSource.getConnection()) {
             //check if user already has this product in their cart
-        try (PreparedStatement checkStmt = conn.prepareStatement(check)) {
-            checkStmt.setInt(1, userId);
-            checkStmt.setInt(2, productId);
-            try (ResultSet rs = checkStmt.executeQuery()) {
-                if (rs.next()) {
-                    // If exists, UPDATE
-                    try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+            try (PreparedStatement checkStmt = conn.prepareStatement(check)) {
+             checkStmt.setInt(1, userId);
+             checkStmt.setInt(2, productId);
+                try (ResultSet rs = checkStmt.executeQuery()) {
+                    if (rs.next()) {
+                         // If exists, UPDATE
+                        try (PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
                         updateStmt.setInt(1, userId);
                         updateStmt.setInt(2, productId);
                         updateStmt.executeUpdate();
-                    }
-                } else {
+                         }
+                    } else {
                     // If not exists, INSERT
-                    try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
+                         try (PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
                         insertStmt.setInt(1, userId);
                         insertStmt.setInt(2, productId);
                         insertStmt.executeUpdate();
@@ -109,6 +132,12 @@ public class MySqlShoppingCartDao  extends MySqlDaoBase implements ShoppingCartD
         }
     }
 
+    /**
+     * Updates the quantity of a specific product in the user's cart.
+     * @param userId  The user whose cart to update.
+     * @param productId The product to update.
+     * @param quantity  The new quantity to set.
+     */
     @Override
     public void updateProductQuantity(int userId, int productId, int quantity) {
         String sql = "UPDATE shopping_cart SET quantity = ? WHERE user_id = ? AND product_id = ?";
@@ -125,7 +154,10 @@ public class MySqlShoppingCartDao  extends MySqlDaoBase implements ShoppingCartD
         }
     }
 
-
+    /**
+     * deletes all products from the user's cart.
+     * @param userId The user whose cart to clear.
+     */
     @Override
     public void clearCart(int userId) {
         String sql = "DELETE FROM shopping_cart WHERE user_id = ?";
@@ -140,6 +172,11 @@ public class MySqlShoppingCartDao  extends MySqlDaoBase implements ShoppingCartD
         }
     }
 
+    /**
+     * Removes a single product from the user's cart.
+     * @param userId The user whose cart to update.
+     * @param productId The product to remove.
+     */
     @Override
     public void removeProductFromCart(int userId, int productId) {
         String sql = "DELETE FROM shopping_cart WHERE user_id = ? AND product_id = ?";
@@ -154,5 +191,4 @@ public class MySqlShoppingCartDao  extends MySqlDaoBase implements ShoppingCartD
             throw new RuntimeException(e);
         }
     }
-
 }

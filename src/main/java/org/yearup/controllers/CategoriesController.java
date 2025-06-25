@@ -10,10 +10,11 @@ import org.yearup.models.Product;
 
 import java.util.List;
 
-// add the annotations to make this a REST controller
-// add the annotation to make this controller the endpoint for the following url
-    // http://localhost:8080/categories
-// add annotation to allow cross site origin requests
+/**
+ * REST controller for category management and category-based product queries.
+ * Endpoint: http://localhost:8080/categories
+ * Allows anyone to view categories and category products; only admins can create, update, or delete categories.
+ */
 @RestController
 @RequestMapping("/categories")
 @CrossOrigin
@@ -22,25 +23,32 @@ public class CategoriesController
     private CategoryDao categoryDao;
     private ProductDao productDao;
 
+    /**
+     * Constructor for dependency injection.
+     */
     @Autowired
     public CategoriesController(CategoryDao categoryDao, ProductDao productDao) {
         this.categoryDao = categoryDao;
         this.productDao = productDao;
     }
 
-
-    // create an Autowired controller to inject the categoryDao and ProductDao
-
-    // add the appropriate annotation for a get action
+    /**
+     * GET /categories
+     * Gets all product categories.
+     * @return List of all categories.
+     */
     @GetMapping
     public List<Category> getAll()
     {
         return categoryDao.getAllCategories();
-        // find and return all categories
-
     }
 
-    // add the appropriate annotation for a get action
+    /**
+     * GET /categories/{id}
+     * Gets a single category by its ID.
+     * @param id The category ID.
+     * @return The Category object (or null if not found).
+     */
     @GetMapping("/{id}")
     public Category getById(@PathVariable int id)
     {
@@ -48,8 +56,12 @@ public class CategoriesController
        return categoryDao.getById(id);
     }
 
-    // the url to return all products in category 1 would look like this
-    // https://localhost:8080/categories/1/products
+    /**
+     * GET /categories/{categoryId}/products
+     * Gets all products in the specified category.
+     * @param categoryId The category ID.
+     * @return List of products in that category.
+     */
     @GetMapping("/{categoryId}/products")
     public List<Product> getProductsById(@PathVariable int categoryId)
     {
@@ -57,8 +69,12 @@ public class CategoriesController
         return productDao.listByCategoryId(categoryId);
     }
 
-    // add annotation to call this method for a POST action
-    // add annotation to ensure that only an ADMIN can call this function
+    /**
+     * POST /categories
+     * Creates a new category. Admin only.
+     * @param category The category to create.
+     * @return The created category.
+     */
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Category addCategory(@RequestBody Category category)
@@ -67,8 +83,12 @@ public class CategoriesController
       return categoryDao.create(category);
     }
 
-    // add annotation to call this method for a PUT (update) action - the url path must include the categoryId
-    // add annotation to ensure that only an ADMIN can call this function
+    /**
+     * PUT /categories/{id}
+     * Updates a category. Admin only.
+     * @param id The category ID to update.
+     * @param category The updated category data.
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void updateCategory(@PathVariable int id, @RequestBody Category category)
@@ -78,9 +98,11 @@ public class CategoriesController
     }
 
 
-    // add annotation to call this method for a DELETE action - the url path must include the categoryId
-    // add annotation to ensure that only an ADMIN can call this function
-
+    /**
+     * DELETE /categories/{id}
+     * Deletes a category by ID. Admin only.
+     * @param id The category ID to delete.
+     */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteCategory(@PathVariable int id)
