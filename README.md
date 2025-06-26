@@ -8,7 +8,7 @@
 
 <h1>EasyShop API</h1>
 
- ![Alt Text](https://github.com/marcon1341/easy-shop-api/blob/main/Screenshot%202025-06-26%20081018.png?raw=true)
+ ![image](https://github.com/marcon1341/easy-shop-api/blob/main/Screenshot%202025-06-26%20081018.png?raw=true)
   
 
 <p>A robust RESTful e-commerce API built with Spring Boot and MySQL.</p>
@@ -117,6 +117,7 @@ mvn spring-boot:run</code></pre>
 <h2><b>Interesting Code: Dynamic Product Search</b></h2>
 This is implemented in the MySqlProductDao class in the search method
 
+![image](https://github.com/marcon1341/easy-shop-api/blob/main/Screenshot%202025-06-26%20091257.png?raw=true)
 
 <h4><b>Why is this interesting?</b></h4>
 <li>Dynamic Filtering</li>
