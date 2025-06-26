@@ -30,8 +30,7 @@
 <ol>
     <li>
         Clone the repository:
-        <pre><code>git clone https://github.com/your-username/your-repo.git
-cd your-repo</code></pre>
+        <pre><code>git clone github.com/marcon1341/easy-shop-api.git</code></pre>
     </li>
     <li>
         Configure Database: Edit <code>src/main/resources/application.properties</code> with your MySQL credentials.
