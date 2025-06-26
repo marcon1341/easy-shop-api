@@ -7,6 +7,10 @@
 <body>
 
 <h1>EasyShop API</h1>
+
+ ![Alt Text](https://github.com/marcon1341/easy-shop-api/blob/main/Screenshot%202025-06-26%20081018.png?raw=true)
+  
+
 <p>A robust RESTful e-commerce API built with Spring Boot and MySQL.</p>
 
 <h2>Features</h2>
@@ -110,7 +114,14 @@ mvn spring-boot:run</code></pre>
     <li>Clear Cart: Removes all cart items</li>
     <li>Checkout: Places order, clears cart</li>
 </ul>
+<h2><b>Interesting Code: Dynamic Product Search</b></h2>
+This is implemented in the MySqlProductDao class in the search method
 
+
+<h4><b>Why is this interesting?</b></h4>
+<li>Dynamic Filtering</li>
+<li>Safe & Efficient</li>
+<li>Flexible API</li>
 
 </body>
 </html>
