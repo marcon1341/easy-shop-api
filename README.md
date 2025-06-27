@@ -124,5 +124,9 @@ This is implemented in the MySqlProductDao class in the search method
 <li>Safe & Efficient</li>
 <li>Flexible API</li>
 
+<h3><b>easyshopDB</b></h3>
+
+![image](https://github.com/marcon1341/easy-shop-api/blob/main/Screenshot%202025-06-26%20184146.png?raw=true)
+
 </body>
 </html>
